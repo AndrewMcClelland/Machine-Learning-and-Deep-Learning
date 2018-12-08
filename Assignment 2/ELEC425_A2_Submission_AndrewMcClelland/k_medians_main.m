@@ -3,7 +3,7 @@ clear all;
 % Load data
 load data;
 
-% Perform K-medoids clustering.
+% Perform K-medians clustering.
 % The function provides visualization 
 % to support up to 4 clusters.
-k_medoids(data, 4);
+k_medians(data, 4);

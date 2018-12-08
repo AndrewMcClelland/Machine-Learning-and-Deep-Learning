@@ -1,4 +1,4 @@
-function [membership, centres] = k_medoids(X, n_cluster)
+function [membership, centres] = k_medians(X, n_cluster)
 % X: the data matrix, rows are data points and columns are features
 % n_cluster: number of cluster
 
@@ -15,13 +15,17 @@ figure('position', [200, 200, 600, 500]);
 % Get the number of data points and number of features
 [n_sample, n_feat] = size(X); 
 
-% Initialize the starting cluster centres as randomly selected medoids
-centres = zeros(n_cluster, n_feat);
-for i = 1:n_cluster
-    centres(i, :) = X(randperm(length(X),1), :);
-end
+% Initialize the starting cluster centres with fixed values.
+centres = [4, 5; 8, 3; 7.6, 5; 8, 3.5];
 
-disp('Start K-medoids clustering ... ');
+% Randomly initialize the starting cluster centres.
+rng('shuffle');
+up_bound = max(X);
+lw_bound = min(X);
+% "centres" is an n_cluster-by-n_feat matrix. 
+%centres = lw_bound + (up_bound-lw_bound).*rand(n_cluster, n_feat);
+
+disp('Start K-medians clustering ... ');
 
 % Initialization:
 % In the begining, all data points are in cluster 1
@@ -72,16 +76,8 @@ while true
     % Save your new centres in variable "centres".
     % You may find the function "median" to be useful here.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % Loop through 
-    for medoid = 1:n_cluster
-        points_in_cluster = X(membership == medoid, :);
-        point_distances = zeros(1, size(points_in_cluster, 1));
-        for point = 1:size(points_in_cluster, 1)
-            point_distances(1, point) = sum(pdist2(points_in_cluster(point, :), points_in_cluster, "cityblock"));
-        end
-        [~, min_index] = min(point_distances);
-        centres(medoid, :) = points_in_cluster(min_index, :);
+    for j = 1:n_cluster
+        centres(j, :) = median(X(membership == j, :));
     end
     
     %Show the result of the M step.
